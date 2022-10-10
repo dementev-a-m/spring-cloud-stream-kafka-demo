@@ -1,0 +1,30 @@
+spring:
+  cloud:
+    function:
+      definition: uppercase
+    stream:
+      bindings:
+        uppercase-in-0:
+          binder: binder-demo
+          destination: input
+          group: demo
+#          consumer:
+#            max-attempts: 1
+#            retryable-exceptions:
+#              java.lang.IllegalArgumentException: false
+        uppercase-out-0:
+          binder: binder-demo
+          destination: output
+      binders:
+        binder-demo:
+          defaultCandidate: false
+          type: kafka
+          environment.spring.cloud.stream.kafka:
+            binder:
+              brokers: localhost:9092
+              configuration:
+                auto-offset-reset: earliest
+              consumer-properties:
+                value.deserializer: org.springframework.kafka.support.serializer.ErrorHandlingDeserializer
+                spring.json.value.default.type: ru.dementev.springcloudstreamkafkademo.domain.Foo
+                spring.deserializer.value.delegate.class: org.springframework.kafka.support.serializer.JsonDeserializer
